@@ -109,7 +109,11 @@ void DataFile::Load(string filename)
 		infile.read(imgdata, imageSize);
 
 		Image img = LoadImageEx((Color*)imgdata, width, height);
-		char* name = new char[nameSize];
+
+		// ITEM 2: Add 1 to get correct space and ignore data in array until you reach nullptr
+		char* name = new char[nameSize + 1]; 
+		name[nameSize] = '\0';
+
 		int age = 0;
 				
 		infile.read((char*)name, nameSize);

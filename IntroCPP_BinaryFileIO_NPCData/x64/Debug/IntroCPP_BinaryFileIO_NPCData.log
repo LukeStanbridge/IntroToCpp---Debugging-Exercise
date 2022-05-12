@@ -1,2 +1,6 @@
-﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿  DataFile.cpp
+C:\Users\s213090\Documents\IntroToCpp---Debugging-Exercise\IntroCPP_BinaryFileIO_NPCData\DataFile.cpp(60,34): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\s213090\Documents\IntroToCpp---Debugging-Exercise\IntroCPP_BinaryFileIO_NPCData\DataFile.cpp(68,43): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  main.cpp
+  Generating Code...
   IntroCPP_BinaryFileIO_NPCData.vcxproj -> C:\Users\s213090\Documents\AIE\Diploma\Introduction to C++\Assessment\Debugging\bin\x64\Debug\IntroCPP_BinaryFileIO_NPCData.exe

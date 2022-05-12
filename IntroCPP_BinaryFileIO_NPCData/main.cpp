@@ -51,30 +51,32 @@ int main(int argc, char* argv[])
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
+        // Scroll to the previous NPC
         if (IsKeyPressed(KEY_LEFT))
         {
             currentRecordIdx--;
             if (currentRecordIdx < 0)
             {
-                currentRecordIdx = 0;
+                currentRecordIdx = 4; // ITEM 3: Also appended this line to allow scrolling to the left 
             }
             currentRecord = data.GetRecord(currentRecordIdx);
             recordTexture = LoadTextureFromImage(currentRecord->image);
         }
 
+        // Scrolls across to the next NPC
         if (IsKeyPressed(KEY_RIGHT))
         {
             currentRecordIdx++;
             if (currentRecordIdx >= data.GetRecordCount())
             {
-                currentRecordIdx = data.GetRecordCount();
+                currentRecordIdx = 0; // ITEM 3: Changed to zero to reset the NPC data display and stop program from crashing.
             }
             currentRecord = data.GetRecord(currentRecordIdx);
             recordTexture = LoadTextureFromImage(currentRecord->image);
         }
 
 
-        // Draw
+        // Draws everything on screen
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
