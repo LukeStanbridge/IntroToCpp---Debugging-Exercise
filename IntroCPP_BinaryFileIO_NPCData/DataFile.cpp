@@ -2,6 +2,7 @@
 #include <fstream>
 using namespace std;
 
+// function to load image from binary file and display on screen
 Image LoadImageEx(Color* pixels, int width, int height)
 {
 	Image image = { 0 };
@@ -32,67 +33,24 @@ DataFile::DataFile()
 
 DataFile::~DataFile()
 {
-	Clear();
-}
 
-void DataFile::AddRecord(string imageFilename, string name, int age)
-{
-	Image i = LoadImage(imageFilename.c_str());
-
-	Record* r = new Record;
-	r->image = i;
-	r->name = name;
-	r->age = age;
-
-	records.push_back(r);
-	recordCount++;
 }
 
 DataFile::Record* DataFile::GetRecord(int index)
 {
-	return records[index];
+	return &record;
 }
 
-void DataFile::Save(string filename)
+void DataFile::Load(string filename, unsigned int index)
 {
-	ofstream outfile(filename, ios::binary);
-
-	int recordCount = records.size();
-	outfile.write((char*)&recordCount, sizeof(int));
-
-	for (int i = 0; i < recordCount; i++)
-	{		
-		Color* imgdata = GetImageData(records[i]->image);
-				
-		int imageSize = sizeof(Color) * records[i]->image.width * records[i]->image.height;
-		int nameSize = records[i]->name.length();
-		int ageSize = sizeof(int);
-
-		outfile.write((char*)&records[i]->image.width, sizeof(int));
-		outfile.write((char*)&records[i]->image.height, sizeof(int));
-		
-		outfile.write((char*)&nameSize, sizeof(int));
-		outfile.write((char*)&ageSize, sizeof(int));
-
-		outfile.write((char*)imgdata, imageSize);
-		outfile.write((char*)records[i]->name.c_str(), nameSize);
-		outfile.write((char*)&records[i]->age, ageSize);
-	}
-
-	outfile.close();
-}
-
-void DataFile::Load(string filename)
-{
-	Clear();
-
+	// read info from file into program
 	ifstream infile(filename, ios::binary);
 
-	recordCount = 0;
 	infile.read((char*)&recordCount, sizeof(int));
 
-	for (int i = 0; i < recordCount; i++)
-	{		
+	for (int i = 0; i <= index; i++)
+	{	
+		// initialise variables and fill with data from file
 		int nameSize = 0;
 		int ageSize = 0;
 		int width = 0, height = 0, format = 0, imageSize = 0;
@@ -105,39 +63,38 @@ void DataFile::Load(string filename)
 		infile.read((char*)&nameSize, sizeof(int));
 		infile.read((char*)&ageSize, sizeof(int));
 
-		char* imgdata = new char[imageSize];
-		infile.read(imgdata, imageSize);
+		if (index == i)
+		{
+			char* imgdata = new char[imageSize];
+			infile.read(imgdata, imageSize);
 
-		Image img = LoadImageEx((Color*)imgdata, width, height);
+			// Load image from binary file
+			Image img = LoadImageEx((Color*)imgdata, width, height);
 
-		// ITEM 2: Add 1 to get correct space and ignore data in array until you reach nullptr
-		char* name = new char[nameSize + 1]; 
-		name[nameSize] = '\0';
+			// ITEM 2: Add 1 to get correct space and ignore data in array until you reach nullptr
+			char* name = new char[nameSize + 1];
+			name[nameSize] = '\0';
 
-		int age = 0;
-				
-		infile.read((char*)name, nameSize);
-		infile.read((char*)&age, ageSize);
+			int age = 0;
 
-		Record* r = new Record();
-		r->image = img;
-		r->name = string(name);
-		r->age = age;
-		records.push_back(r);
+			infile.read((char*)name, nameSize);
+			infile.read((char*)&age, ageSize);
 
-		delete [] imgdata;
-		delete [] name;
+			//ITEM 1: fill record details once the correct index has been found in the for loop
+			record.image = img;
+			record.name = (string)name;
+			record.age = age;
+
+			//delete data after use
+			delete[] imgdata;
+			delete[] name;
+		}
+		
+		//ITEM 1: if the corrct index isn't found then seek by adding total bytes from the current position
+		else
+		{			
+			infile.seekg((ageSize + nameSize + imageSize), ios::cur);
+		}				
 	}
-
 	infile.close();
-}
-
-void DataFile::Clear()
-{
-	for (int i = 0; i < records.size(); i++)
-	{
-		delete records[i];
-	}
-	records.clear();
-	recordCount = 0;
 }

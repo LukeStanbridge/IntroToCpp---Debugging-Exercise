@@ -8,6 +8,7 @@ using namespace std;
 
 class DataFile
 {
+	// struct for each record of a person
 public:
 	struct Record {
 		Image image;
@@ -17,24 +18,16 @@ public:
 
 private:
 	int recordCount;
-	std::vector<Record*> records;	// delete this vector. Load only the required record 
-
-
+	Record record;
 
 public:
 	DataFile();
 	~DataFile();
 
-	void AddRecord(string imageFilename, string name, int age);
 	Record* GetRecord(int index);
 
 	int GetRecordCount() { return recordCount; };
 
-	void Save(string filename);
-	void Load(string filename);
-
-private:
-	void Clear();
-
+	void Load(string filename, unsigned int index);
 };
 

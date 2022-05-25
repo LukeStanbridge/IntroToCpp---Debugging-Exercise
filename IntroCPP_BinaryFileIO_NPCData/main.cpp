@@ -34,8 +34,9 @@ int main(int argc, char* argv[])
     DataFile data;
     int currentRecordIdx = 0;
 
-    data.Load("npc_data.dat");
+    data.Load("npc_data.dat", currentRecordIdx); // load data file
 
+    // display fir
     DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx);
     Texture2D recordTexture = LoadTextureFromImage(currentRecord->image);
 
@@ -59,8 +60,12 @@ int main(int argc, char* argv[])
             {
                 currentRecordIdx = 4; // ITEM 3: Also appended this line to allow scrolling to the left 
             }
-            currentRecord = data.GetRecord(currentRecordIdx);
-            recordTexture = LoadTextureFromImage(currentRecord->image);
+
+            // ITEM 1: load current record from index
+            data.Load("npc_data.dat", currentRecordIdx);
+
+            currentRecord = data.GetRecord(currentRecordIdx); // gets next record from file
+            recordTexture = LoadTextureFromImage(currentRecord->image); // load image for next record
         }
 
         // Scrolls across to the next NPC
@@ -71,6 +76,10 @@ int main(int argc, char* argv[])
             {
                 currentRecordIdx = 0; // ITEM 3: Changed to zero to reset the NPC data display and stop program from crashing.
             }
+
+            // ITEM 1: load current record from index
+            data.Load("npc_data.dat", currentRecordIdx);
+
             currentRecord = data.GetRecord(currentRecordIdx);
             recordTexture = LoadTextureFromImage(currentRecord->image);
         }
